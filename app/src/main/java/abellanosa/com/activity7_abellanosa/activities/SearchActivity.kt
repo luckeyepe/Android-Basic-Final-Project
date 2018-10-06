@@ -59,6 +59,7 @@ class SearchActivity : AppCompatActivity() {
                             alertDialog!!.setTitle("ERROR")
                             alertDialog!!.setMessage("Student is not in the database")
                             alertDialog!!.show()
+                            
                         }
                     }
 
