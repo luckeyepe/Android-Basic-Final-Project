@@ -1,6 +1,7 @@
 package abellanosa.com.activity7_abellanosa.activities
 
 import abellanosa.com.activity7_abellanosa.R
+import abellanosa.com.activity7_abellanosa.models.Student
 import android.app.ProgressDialog
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
@@ -111,6 +112,7 @@ class SearchActivity : AppCompatActivity() {
 
     private fun updateStudent() {
         var dialogBuilder: AlertDialog.Builder?
+        var alert: AlertDialog.Builder?
         var dialog: AlertDialog?
         mDatabaseReference = FirebaseDatabase.getInstance().reference.child("Students")
 
@@ -148,10 +150,58 @@ class SearchActivity : AppCompatActivity() {
 
             })
 
+            popupIdNum.isEnabled = false
+
             dialogBuilder = AlertDialog.Builder(this).setView(view)
             dialog = dialogBuilder!!.create()
             dialog?.show()
 
+            popupUpdateButton.setOnClickListener {
+                var s = Student()
+
+                //copy values in to student s
+                if (!popupFirstName.text.isNullOrEmpty()){
+                    s.firstName = popupFirstName.text.toString().trim()
+                }else{
+                    s.firstName = popupFirstName.hint.toString().trim()
+                }
+
+                if (!popupMiddelName.text.isNullOrEmpty()){
+                    s.middleName = popupMiddelName.text.toString().trim()
+                }else{
+                    s.middleName = popupMiddelName.hint.toString().trim()
+                }
+
+                if (!popupLastName.text.isNullOrEmpty()){
+                    s.lastName = popupLastName.text.toString().trim()
+                }else{
+                    s.lastName = popupLastName.hint.toString().trim()
+                }
+
+                if (!popupCourse.text.isNullOrEmpty()){
+                    s.course = popupCourse.text.toString().trim()
+                }else{
+                    s.course = popupCourse.hint.toString().trim()
+                }
+
+                if (!popupYearLevel.text.isNullOrEmpty()){
+                    s.yearLevel = popupYearLevel.text.toString().trim()
+                }else{
+                    s.yearLevel = popupYearLevel.hint.toString().trim()
+                }
+
+                s.idNum = idNum
+
+                //save to realtime database
+                mDatabaseReference!!.child(idNum).setValue(s)
+
+                //popup info
+                alertDialog!!.setTitle("SUCCESS")
+                alertDialog!!.setMessage("Student info has been updated")
+                alertDialog!!.show()
+
+                dialog.dismiss()
+            }
         }
     }
 }
