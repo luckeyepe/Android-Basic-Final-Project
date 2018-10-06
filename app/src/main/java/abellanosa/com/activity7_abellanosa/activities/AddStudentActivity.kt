@@ -43,7 +43,8 @@ class AddStudentActivity : AppCompatActivity() {
                     }
 
                     override fun onDataChange(p0: DataSnapshot) {
-                        if (p0.child(idNum).exists()) {
+                        //checks the db if id number is already in the database
+                        if (p0.hasChild(idNum)) {
                             progress.dismiss()
 //                            Toast.makeText(applicationContext, "Error there", Toast.LENGTH_LONG).show()
                             alertDialog!!.setTitle("ERROR")
