@@ -22,6 +22,7 @@ class AddStudentActivity : AppCompatActivity() {
         val progress = ProgressDialog(this)
 
         btn_addStudentAdd.setOnClickListener {
+            //adds a loading popup
             progress.setTitle("Loading")
             progress.setMessage("Wait while loading...")
             progress.setCancelable(false) // disable dismiss by tapping outside of the dialog

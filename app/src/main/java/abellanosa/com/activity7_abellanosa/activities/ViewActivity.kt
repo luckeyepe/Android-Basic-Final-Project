@@ -25,12 +25,12 @@ class ViewActivity : AppCompatActivity() {
         supportActionBar!!.hide()
         mDatabaseReference = FirebaseDatabase.getInstance().reference.child("Students")
 
-        studentList = ArrayList<Student>()
-        layoutManager = LinearLayoutManager(this)
-        adapter = StudentListAdapter(this.studentList!!, this)
+        studentList = ArrayList<Student>()//a list of students
+        layoutManager = LinearLayoutManager(this)//sets the layout to a scrolling layout that goes up and down(similar to scroll view)
+        adapter = StudentListAdapter(this.studentList!!, this)//passes the list of students and the application context
 
-        recyclerView.layoutManager = layoutManager
-        recyclerView.adapter = adapter
+        recyclerView.layoutManager = layoutManager//assign layout
+        recyclerView.adapter = adapter//assign adapter
 
         mDatabaseReference!!.addListenerForSingleValueEvent(object: ValueEventListener{
             override fun onCancelled(p0: DatabaseError) {
@@ -38,17 +38,18 @@ class ViewActivity : AppCompatActivity() {
             }
 
             override fun onDataChange(snapshot: DataSnapshot) {
+                //this loop goes through ever branch under the "Student" node in the firebase database
                 for (shot in snapshot.getChildren()) {
-                    var student = shot.getValue(Student::class.java)
-                    studentList!!.add(student!!)
-                    adapter = StudentListAdapter(studentList!!, applicationContext)
-                    recyclerView.adapter = adapter
+                    var student = shot.getValue(Student::class.java)//using the Student model, the data grabed from one node is easily placed into a student class
+                    studentList!!.add(student!!)//adds a student into the list
+                    adapter = StudentListAdapter(studentList!!, applicationContext)//update the list of students
+                    recyclerView.adapter = adapter//updates the adapter
                 }
             }
 
         })
 
-        adapter!!.notifyDataSetChanged()
+        adapter!!.notifyDataSetChanged()//shows the adapter
 
     }
 }
