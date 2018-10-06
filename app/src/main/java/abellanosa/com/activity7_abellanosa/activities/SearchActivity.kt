@@ -4,9 +4,13 @@ import abellanosa.com.activity7_abellanosa.R
 import android.app.ProgressDialog
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
+import android.renderscript.Sampler
 import android.support.v7.app.AlertDialog
+import android.view.LayoutInflater
+import android.widget.Toast
 import com.google.firebase.database.*
 import kotlinx.android.synthetic.main.activity_search.*
+import kotlinx.android.synthetic.main.popup_edit_student.view.*
 
 class SearchActivity : AppCompatActivity() {
     var mDatabaseReference: DatabaseReference ?= null
@@ -62,7 +66,7 @@ class SearchActivity : AppCompatActivity() {
         }
 
         btn_searchDelete.setOnClickListener {
-            if (edt_seachIDNum.text.toString().trim().isEmpty()){
+            if (edt_seachIDNum.text.toString().trim().isEmpty() && txt_searchIDNum.text == getString(R.string.id_number_text)){
                 alertDialog!!.setTitle("Error")
                 alertDialog!!.setMessage("Fill in all fields")
                 alertDialog!!.show()
@@ -97,6 +101,57 @@ class SearchActivity : AppCompatActivity() {
 
                 })
             }
+        }
+
+        btn_searchEdit.setOnClickListener {
+            Toast.makeText(applicationContext, "Edit button clicked", Toast.LENGTH_LONG).show()
+            updateStudent()
+        }
+    }
+
+    private fun updateStudent() {
+        var dialogBuilder: AlertDialog.Builder?
+        var dialog: AlertDialog?
+        mDatabaseReference = FirebaseDatabase.getInstance().reference.child("Students")
+
+        if (edt_seachIDNum.text.toString().trim().isEmpty() && txt_searchIDNum.text == getString(R.string.id_number_text)){
+            alertDialog!!.setTitle("Error")
+            alertDialog!!.setMessage("Fill in all fields")
+            alertDialog!!.show()
+        }else{
+            //start making the popup after checking the value of the id Number
+            var idNum = txt_searchIDNum.text.toString().trim()
+            var view = LayoutInflater.from(this).inflate(R.layout.popup_edit_student, null)
+
+            var popupIdNum = view.edt_editPopupStudentIDNum
+            var popupFirstName = view.edt_editPopupStudentFirstName
+            var popupMiddelName = view.edt_editPopupStudentMiddelName
+            var popupLastName = view.edt_editPopupStudentLastName
+            var popupCourse = view.edt_editPopupStudentCourse
+            var popupYearLevel = view.edt_editPopupStudentYearLevel
+            var popupUpdateButton = view.btn_editPopupStudentUpdate
+
+            //fill in the edtitext with hints about current student info
+            mDatabaseReference!!.child(idNum).addValueEventListener(object : ValueEventListener {
+                override fun onCancelled(p0: DatabaseError) {
+                    TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+                }
+
+                override fun onDataChange(snapshot: DataSnapshot) {
+                    popupIdNum.hint = snapshot.child("idNum").value.toString()
+                    popupFirstName.hint = snapshot.child("firstName").value.toString()
+                    popupMiddelName.hint = snapshot.child("middleName").value.toString()
+                    popupLastName.hint = snapshot.child("lastName").value.toString()
+                    popupCourse.hint = snapshot.child("course").value.toString()
+                    popupYearLevel.hint = snapshot.child("yearLevel").value.toString()
+                }
+
+            })
+
+            dialogBuilder = AlertDialog.Builder(this).setView(view)
+            dialog = dialogBuilder!!.create()
+            dialog?.show()
+
         }
     }
 }
